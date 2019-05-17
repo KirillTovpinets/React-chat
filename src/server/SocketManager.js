@@ -1,4 +1,5 @@
 const io = require('./index.js').io;
+const db = require('monk')('mongodb://localhost:27017/chat');
 
 const { VERIFY_USER, 
 				USER_CONNECTED, 
@@ -6,6 +7,7 @@ const { VERIFY_USER,
 				LOGOUT,
 				COMMUNITY_CHAT,
 				MESSAGE_RECIEVED,
+				REGISTER_USER,
 				MESSAGE_SENT,
 				TYPING } = require('../Events');
 
@@ -20,17 +22,19 @@ module.exports = function (socket) {
 	let sendMessagetoChatFromUser;
 	let sendTypingFromUser;
 
-	socket.on(VERIFY_USER, (nickname, callback) => {
-		if(isUser(connectedUsers, nickname)) {
-			callback({isUser: true, user: null});
-		} else {
-			callback({isUser: false, user: createUser({name: nickname})});
-		}
+	socket.on(VERIFY_USER, (user, callback) => {
+		const users = db.get('users');
+		console.log(user);
+		users.find(user).then(el => {
+			console.log(el);
+			el.length === 0 ?
+				callback(null) :
+				callback(el.pop());
+		});	
 	})
 
 	socket.on(USER_CONNECTED, (user) => {
 		connectedUsers = addUser(connectedUsers, user);
-		socket.user = user;
 
 		sendMessagetoChatFromUser = sendMessageToChat(user.name);
 		sendTypingFromUser = sendTypingToChat(user.name);
@@ -39,6 +43,13 @@ module.exports = function (socket) {
 		console.log(connectedUsers);
 	})
 
+	socket.on(REGISTER_USER, (user, callback) => {
+		const users = db.get('users');
+		const newUser = createUser(user);
+		users.insert(newUser);
+		const dbUser = users.find(newUser);
+		callback(dbUser);
+	})
 	socket.on('disconnect', () => {
 		if('user' in socket) {
 			connectedUsers = removeUser(connectedUsers, socket.user.name);
@@ -79,7 +90,7 @@ function sendMessageToChat(sender) {
 
 function addUser(userList, user) {
 	let newList = Object.assign({}, userList);
-	newList[user.name] = user
+	newList[user.username] = user
 	return newList;
 }
 
@@ -87,8 +98,4 @@ function removeUser(userList, username) {
 	let newList = Object.assign({}, userList)
 	delete newList[username];
 	return newList;
-}
-
-function isUser(userList, username) {
-	return username in userList;
 }

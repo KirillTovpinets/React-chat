@@ -1,9 +1,29 @@
 import React, { Component, Fragment } from 'react'
 import { Form, Icon, Input } from 'antd';
 import { Button, Block } from '../../../component';
+import { REGISTER_USER } from '../../../Events';
 import { Link } from 'react-router-dom';
 
 class RegisterForm extends Component {
+	handleSubmit(e){
+		e.preventDefault();
+		this.props.socket.emit(REGISTER_USER, this.props.form.getFieldsValue(), this.checkRegistration.bind(this))
+	}
+
+	checkRegistration(user){
+		if(user){
+			this.props.socket.user = user;
+			document.location.href = '/login';
+		}
+	}
+	compareToFirstPassword = (rule, value, callback) => {
+    const form = this.props.form;
+    if (value && value !== form.getFieldValue('password')) {
+      callback('Two passwords that you enter is inconsistent!');
+    } else {
+      callback();
+    }
+  };
 	render() {
 		const { getFieldDecorator } = this.props.form;
 		return (
@@ -13,7 +33,7 @@ class RegisterForm extends Component {
 					<p>Для входа в чат Вам нужно зарегистрироваться</p>
 				</div>
 				<Block>
-					<Form onSubmit={this.handleSubmit} className="login-form">
+					<Form onSubmit={this.handleSubmit.bind(this)} className="login-form">
 						<Form.Item hasFeedback>
 							{ getFieldDecorator('username', {
 								rules: [{ required: true, message: 'Введите свой логин'}]
@@ -35,7 +55,7 @@ class RegisterForm extends Component {
 						</Form.Item>
 						<Form.Item hasFeedback>
 							{ getFieldDecorator('repeat-password', {
-									rules: [{ required: true, message: 'Введите свой пароль'}]
+									rules: [{ required: true, message: 'Пароли не совпадают', validator: this.compareToFirstPassword }]
 								})(<Input
 											prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
 											type="password"

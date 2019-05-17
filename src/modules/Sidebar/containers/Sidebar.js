@@ -3,7 +3,7 @@ import '../styles/Sidebar.scss';
 import { Form, Icon, Input } from 'antd';
 import ArchiveChat from '../../../component/ArchiveChat';
 
-export default function Sidebar({logout, chats, user, activeChat, setActiveChat}) {
+export default function Sidebar({logout, user, activeChat, setActiveChat}) {
 		return (
 			<div className='sidebar'>
 				<Form>
@@ -14,7 +14,7 @@ export default function Sidebar({logout, chats, user, activeChat, setActiveChat}
 				</Form>				
 				<hr/>
 				<div className='chat-archive'>
-					{chats.map((el, index) => <ArchiveChat key={index} chat={el} />)}
+					{user && user.chats.map((el, index) => <ArchiveChat key={index} chat={el} />)}
 				</div>
 			</div>
 		)

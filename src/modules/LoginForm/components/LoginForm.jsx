@@ -2,9 +2,23 @@ import React, { Component, Fragment } from 'react'
 import { Form, Icon, Input } from 'antd';
 import { Button, Block } from '../../../component';
 import { Link } from 'react-router-dom';
+import { VERIFY_USER } from '../../../Events';
 
 class LoginForm extends Component {
+	handleSubmit = (e) => {
+		e.preventDefault();
 
+		this.props.socket.emit(VERIFY_USER, this.props.form.getFieldsValue(), this.checkLogin)
+	}
+
+	checkLogin = (user) => {
+		if (user) {
+			this.props.socket.user = user;
+			this.props.history.push('/im');
+		} else {
+			console.log('Authentication error');
+		}
+	}
 	render() {
 		const { getFieldDecorator } = this.props.form;
 		return (
@@ -16,7 +30,7 @@ class LoginForm extends Component {
 				<Block>
 					<Form onSubmit={this.handleSubmit} className="login-form">
 						<Form.Item hasFeedback>
-						{ getFieldDecorator('login', {
+						{ getFieldDecorator('username', {
 							rules: [{required: true, message: 'Введите свой логин'}]
 						})(<Input
 								prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}

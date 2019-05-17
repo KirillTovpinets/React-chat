@@ -8,13 +8,8 @@ export default class ChatContainer extends Component {
 		super(props);
 
 		this.state = {
-			chats: [],
 			activeChat: null
 		}
-	}
-	componentDidMount(){
-		const { socket } = this.props
-		socket.emit(COMMUNITY_CHAT, this.resetChat);
 	}
 
 	addChat = (chat, reset) => { 
@@ -92,8 +87,7 @@ export default class ChatContainer extends Component {
 			<div className="container">
 				<Sidebar
 					logout={this.logout}
-					chats={this.state.chats}
-					user={this.props.user}
+					user={this.props.socket.user}
 					activeChat={this.state.activeChat}
 					setActiveChat={this.setActiveChat}
 				/>

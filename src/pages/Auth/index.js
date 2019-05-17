@@ -4,11 +4,11 @@ import { Route } from 'react-router-dom';
 import './Auth.scss';
 
 
-const Auth = () => (
+const Auth = ({socket}) => (
 	<section className='auth'>
 		<div className="auth-content">
-			<Route exact path={["/", "/login"]} component={LoginForm}/>
-			<Route exact path="/register" render={() => <RegisterForm />}/>
+			<Route exact path={["/", "/login"]} render={(props) => <LoginForm {...props} socket={socket} />}/>
+			<Route exact path="/register" render={(props) => <RegisterForm {...props} socket={socket} />}/>
 		</div>
 	</section>
 )
