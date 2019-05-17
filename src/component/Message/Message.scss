@@ -1,0 +1,77 @@
+@import '../../styles/veriables';
+
+.message{
+	display: flex;
+	max-width: 440px;
+	margin-bottom: 15px;
+	&__avatar{
+		display: flex;
+		flex-direction: column-reverse;
+		img{
+			border-radius: 50px;
+			width: 33px;
+			height: 33px;
+			margin-right: 13px;
+			margin-bottom: 30px;
+		}
+	}
+	&__bubble{
+		background-color: $blue;
+		box-shadow: 0px 5px 5px rgba(54, 116, 255, 0.196);
+		border-radius: 12px 12px 12px 0px;
+		padding: 15px;
+		margin-bottom: 8px;
+	}
+	&__date{
+		font-size: 12px;
+		opacity: 0.5;
+	}
+	&__text{
+			color: #fff;
+			margin: 0;
+			line-height: 20px;
+	}
+	&__content{
+		display: flex;
+		flex-direction: row-reverse;
+		img{
+			width: 13px;
+			margin-left: 10px;
+			opacity: .3;
+			filter: grayscale(100%)
+		}
+	}
+	&.is-readed{
+		.message__content{
+			img{
+				filter: grayscale(0%);
+				opacity: 1;
+			}
+		}	
+	}
+	&--isMe{
+		display: flex;
+		flex-direction: row-reverse;
+		.message__content{
+			flex-direction: row;
+			img{
+				margin-right: 10px;
+			}
+		}
+		.message__avatar{
+			img{
+				margin-right: 0;
+				margin-left: 13px;
+			}
+		}
+		.message__bubble{
+			background-color: #fff;
+			border: 1px solid #ececec;
+			box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.0220444);
+			border-radius: 12px 12px 0px 12px;
+		}
+		.message__text{
+			color: #202020;
+		}
+	}
+}
