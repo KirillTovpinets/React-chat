@@ -1,0 +1,26 @@
+.sidebar{
+	padding: 50px 0px;
+	width: 300px;
+	border-right: 1px solid #fafafa;
+	form{
+		padding: 0 20px;
+		.search-field{
+			span{
+				color: #cacaca;
+			}
+			input{
+				width: 100%;
+				background: #fafafa;
+				border: none;
+				border-radius: 3px;
+			}
+		}
+	}
+	hr{
+		background-color: #fafafa;
+		color: #fafafa;
+		border: none;
+		height: 1px;
+		margin-bottom: 20px;
+	}
+}

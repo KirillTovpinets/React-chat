@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { COMMUNITY_CHAT, MESSAGE_SENT, MESSAGE_RECIEVED, TYPING } from '../../../Events';
 import Chat from '../components/Chat';
 import Sidebar from '../../Sidebar';
-
+import '../styles/Chat.scss';
 export default class ChatContainer extends Component {
 	constructor(props) {
 		super(props);
@@ -97,7 +97,7 @@ export default class ChatContainer extends Component {
 					activeChat={this.state.activeChat}
 					setActiveChat={this.setActiveChat}
 				/>
-				<Chat chatId={this.state.activeChat}/>
+				<Chat chat={this.state.activeChat}/>
 			</div>
 		)
 	}
