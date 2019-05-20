@@ -13,7 +13,7 @@ const { VERIFY_USER,
 
 const { createUser, createMessage, createChat } = require('../Factories');
 
-let connectedUsers = {};
+let connectedUsers = [];
 let communityChat = createChat();
 
 module.exports = function (socket) {
@@ -33,15 +33,14 @@ module.exports = function (socket) {
 		});	
 	})
 
-	socket.on(USER_CONNECTED, (user) => {
+	socket.on(USER_CONNECTED, (user, callback) => {
 		connectedUsers = addUser(connectedUsers, user);
-
-		sendMessagetoChatFromUser = sendMessageToChat(user.name);
+		sendMessagetoChatFromUser = sendMessageToChat(user);
 		sendTypingFromUser = sendTypingToChat(user.name);
-
-		io.emit(USER_CONNECTED, connectedUsers);
-		console.log(connectedUsers);
+		io.emit(USER_CONNECTED, user);
+		callback(connectedUsers);
 	})
+
 
 	socket.on(REGISTER_USER, (user, callback) => {
 		const users = db.get('users');
@@ -84,14 +83,13 @@ function sendTypingToChat(user) {
 
 function sendMessageToChat(sender) {
 	return (chatId, message) => {
-		io.emit(`${MESSAGE_RECIEVED}-${chatId}`, createMessage({message, sender}));
+		const hash = sender.id.concat(chatId).split('').sort().join('');
+		io.emit(`${MESSAGE_RECIEVED}-${hash}`, createMessage({message, sender}));
 	}
 }
 
 function addUser(userList, user) {
-	let newList = Object.assign({}, userList);
-	newList[user.username] = user
-	return newList;
+	return userList.concat(user);
 }
 
 function removeUser(userList, username) {

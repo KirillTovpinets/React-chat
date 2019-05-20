@@ -3,7 +3,6 @@ import { LoginForm, RegisterForm } from '../../modules';
 import { Route } from 'react-router-dom';
 import './Auth.scss';
 
-
 const Auth = ({socket}) => (
 	<section className='auth'>
 		<div className="auth-content">

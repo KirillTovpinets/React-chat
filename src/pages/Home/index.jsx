@@ -4,8 +4,33 @@ import { ChatContainer } from '../../modules';
 import './Home.scss';
 
 class Home extends React.Component {
+	constructor(props){
+		super(props);
+		this.state = {
+			peopleOnline: [],
+			user: null
+		}
+	}
+	componentWillUnmount(){
+		const {socket} = this.props;
+		socket.emit(LOGOUT);
+	}
 	componentDidMount(){
-		this.props.socket.emit(USER_CONNECTED, this.props.socket.user)
+		const {socket} = this.props;
+		socket.on(USER_CONNECTED, (newUser) => {
+			socket.connectedUsers = socket.connectedUsers ? socket.connectedUsers.concat(newUser) : [newUser];
+			this.forceUpdate();
+		}) 
+		let user = this.props.socket.user;
+
+		if (!user) {
+			user = JSON.parse(localStorage.getItem('user'));
+		}
+		this.props.socket.emit(USER_CONNECTED, user, this.setOnlineList.bind(this))
+	}
+	setOnlineList(peopleOnline){
+		this.props.socket.connectedUsers = peopleOnline;
+		this.forceUpdate();
 	}
 	logout = () => {
 		const { socket } = this.props;

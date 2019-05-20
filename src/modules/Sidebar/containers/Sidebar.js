@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import '../styles/Sidebar.scss';
 import { Form, Icon, Input } from 'antd';
 import ArchiveChat from '../../../component/ArchiveChat';
+import OnlinePerson from '../../../component/OnlinePerson';
 
-export default function Sidebar({logout, user, activeChat, setActiveChat}) {
+export default function Sidebar({logout, user, online, activeChat, setActiveChat}) {
 		return (
 			<div className='sidebar'>
 				<Form>
@@ -13,6 +14,13 @@ export default function Sidebar({logout, user, activeChat, setActiveChat}) {
 					</Form.Item>
 				</Form>				
 				<hr/>
+				<div className='now-online'>
+					{online && online.map((el, index) => {
+						if(el !== user){
+							return <OnlinePerson key={index} user={el} setActiveChat={setActiveChat} />
+						}
+					})}
+				</div>
 				<div className='chat-archive'>
 					{user && user.chats.map((el, index) => <ArchiveChat key={index} chat={el} />)}
 				</div>

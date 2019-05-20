@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route } from 'react-router-dom';
 import io from 'socket.io-client';
+import { USER_CONNECTED } from './Events';
 
 import { Auth, Home } from './pages';
 
@@ -26,6 +27,9 @@ class App extends React.Component {
 
 		socket.on('connect_error', (err) => {
 			console.log(err);
+		})
+		socket.on(USER_CONNECTED, (list) => {
+			console.log(list)
 		})
 		this.setState({
 			...this.state,

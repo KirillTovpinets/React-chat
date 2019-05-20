@@ -3,7 +3,8 @@ import { Form, Icon, Input } from 'antd';
 import { Button, Block } from '../../../component';
 import { Link } from 'react-router-dom';
 import { VERIFY_USER } from '../../../Events';
-
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
 class LoginForm extends Component {
 	handleSubmit = (e) => {
 		e.preventDefault();
@@ -13,11 +14,33 @@ class LoginForm extends Component {
 
 	checkLogin = (user) => {
 		if (user) {
+			localStorage.setItem('user', JSON.stringify(user));
 			this.props.socket.user = user;
 			this.props.history.push('/im');
 		} else {
 			console.log('Authentication error');
+			this.createNotification('error')
 		}
+	}
+	createNotification = (type) => {
+		return () => {
+			switch (type) {
+				case 'info':
+					NotificationManager.info('Info message');
+					break;
+				case 'success':
+					NotificationManager.success('Success message', 'Title here');
+					break;
+				case 'warning':
+					NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
+					break;
+				case 'error':
+					NotificationManager.error('Ошибка авторизации', 'Click me!', 5000,);
+					break;
+				default:
+					break;
+			}
+		};
 	}
 	render() {
 		const { getFieldDecorator } = this.props.form;

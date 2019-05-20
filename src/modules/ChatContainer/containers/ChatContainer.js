@@ -33,17 +33,15 @@ export default class ChatContainer extends Component {
 	}
 	addMessageToChat(chatId){
 		return message => {
-			const { chats } = this.state;
-			let newChats = chats.map((chat) => {
-				if(chat.id === chatId) {
-					chat.messages.push(message);
-				}
-				return chat;
-			})
+			const { activeChat } = this.state;
+			const { socket } = this.props;
+			activeChat.chats.find(el => el.id === chatId).messages.push(message);
 
+			const id = socket.user.id;
+			socket.emit(MESSAGE_SENT, {chatId: id, message});
 			this.setState({
 				...this.state,
-				chats: newChats
+				activeChat
 			})
 		}
 	}
@@ -76,22 +74,43 @@ export default class ChatContainer extends Component {
 		const { socket } = this.props;
 		socket.emit(TYPING, {chatId, isTyping});
 	}
-	setActiveChat(activeChat){
+	setActiveChat(chat){
+		const { user, connectedUsers } = this.props.socket;
+
+		const active = connectedUsers.find(el => el.id === chat.id);
+		
+		const exist = active.chats.find(el => el.id === user.id);
+		if (!exist) {
+			active.chats.push({
+				id: user.id,
+				messages: []
+			})
+		}
+		
 		this.setState({
 			...this.state,
-			activeChat
+			activeChat: active
 		})
+		const { socket } = this.props;
+		const hash = user.id.concat(active.id).split('').sort().join('');
+		const messageEvent = `${MESSAGE_RECIEVED}-${hash}`
+		const typingEvent = `${TYPING}-${active.id}`
+		socket.on(messageEvent, this.addMessageToChat(user.id));
 	}
 	render() {
+		const { user, connectedUsers } = this.props.socket;
 		return (
 			<div className="container">
 				<Sidebar
 					logout={this.logout}
-					user={this.props.socket.user}
+					user={user}
+					online={connectedUsers}
 					activeChat={this.state.activeChat}
-					setActiveChat={this.setActiveChat}
+					setActiveChat={this.setActiveChat.bind(this)}
 				/>
-				<Chat chat={this.state.activeChat}/>
+				<Chat company={this.state.activeChat}
+							userid={user.id}
+							send={this.sendMessage.bind(this)}/>
 			</div>
 		)
 	}
