@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import './ArchiveChat.scss';
 import isToday from 'date-fns/is_today';
 import format from 'date-fns/format';

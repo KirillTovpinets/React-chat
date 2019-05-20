@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { VERIFY_USER } from '../../../Events';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 import 'react-notifications/lib/notifications.css';
+
 class LoginForm extends Component {
 	handleSubmit = (e) => {
 		e.preventDefault();
@@ -18,29 +19,8 @@ class LoginForm extends Component {
 			this.props.socket.user = user;
 			this.props.history.push('/im');
 		} else {
-			console.log('Authentication error');
-			this.createNotification('error')
+			NotificationManager.error('Ошибка авторизации', 'Click me!', 5000);
 		}
-	}
-	createNotification = (type) => {
-		return () => {
-			switch (type) {
-				case 'info':
-					NotificationManager.info('Info message');
-					break;
-				case 'success':
-					NotificationManager.success('Success message', 'Title here');
-					break;
-				case 'warning':
-					NotificationManager.warning('Warning message', 'Close after 3000ms', 3000);
-					break;
-				case 'error':
-					NotificationManager.error('Ошибка авторизации', 'Click me!', 5000,);
-					break;
-				default:
-					break;
-			}
-		};
 	}
 	render() {
 		const { getFieldDecorator } = this.props.form;
@@ -79,6 +59,7 @@ class LoginForm extends Component {
 							<Link to="/register">Зарегистрироваться</Link>
 					</Form>
 				</Block>
+				<NotificationContainer/>
 			</Fragment>
 		);
 	}

@@ -6,7 +6,9 @@ import classNames from 'classnames';
 import checkedSvg from '../../assets/img/checked.svg';
 
 import './Message.scss';
-export default function Message({ avatar, user, isMe, text, date, isSend, isReaded }) {
+export default function Message({ user, isMe, text, date, isSend, isReaded }) {
+	const defaultAvatar = 'http://laurauinteriordesign.com/wp-content/uploads/2018/03/avatar-placeholder.png';
+	const avatar = user.avatar ? ('data:image/jpeg;base64,' + user.avatar.file.originFileObj) : defaultAvatar;
 	return (
 		<div className={classNames('message', {'message--isMe': isMe, 'is-readed': isReaded})}>
 			<div className="message__avatar">

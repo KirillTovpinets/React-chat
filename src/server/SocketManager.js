@@ -24,9 +24,7 @@ module.exports = function (socket) {
 
 	socket.on(VERIFY_USER, (user, callback) => {
 		const users = db.get('users');
-		console.log(user);
 		users.find(user).then(el => {
-			console.log(el);
 			el.length === 0 ?
 				callback(null) :
 				callback(el.pop());
@@ -38,12 +36,14 @@ module.exports = function (socket) {
 		sendMessagetoChatFromUser = sendMessageToChat(user);
 		sendTypingFromUser = sendTypingToChat(user.name);
 		io.emit(USER_CONNECTED, user);
+		console.log(connectedUsers);
 		callback(connectedUsers);
 	})
 
 
 	socket.on(REGISTER_USER, (user, callback) => {
 		const users = db.get('users');
+		console.log(user);
 		const newUser = createUser(user);
 		users.insert(newUser);
 		const dbUser = users.find(newUser);
@@ -51,7 +51,7 @@ module.exports = function (socket) {
 	})
 	socket.on('disconnect', () => {
 		if('user' in socket) {
-			connectedUsers = removeUser(connectedUsers, socket.user.name);
+			connectedUsers = removeUser(connectedUsers, socket.user);
 
 			io.emit(USER_DISCONNECTED, connectedUsers);
 			console.log('Disconnect', connectedUsers);
@@ -59,7 +59,7 @@ module.exports = function (socket) {
 	})
 
 	socket.on(LOGOUT, () => {
-		connectedUsers = removeUser(connectedUsers, socket.user.name);
+		connectedUsers = removeUser(connectedUsers, socket.user);
 		io.emit(USER_DISCONNECTED, connectedUsers);
 		console.log('Disconnect', connectedUsers);
 	})
@@ -92,8 +92,6 @@ function addUser(userList, user) {
 	return userList.concat(user);
 }
 
-function removeUser(userList, username) {
-	let newList = Object.assign({}, userList)
-	delete newList[username];
-	return newList;
+function removeUser(userList, user) {
+	return userList.filter(el => el === user);
 }

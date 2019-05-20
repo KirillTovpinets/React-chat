@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { COMMUNITY_CHAT, MESSAGE_SENT, MESSAGE_RECIEVED, TYPING } from '../../../Events';
+import { MESSAGE_SENT, MESSAGE_RECIEVED, TYPING } from '../../../Events';
 import Chat from '../components/Chat';
 import Sidebar from '../../Sidebar';
 import '../styles/Chat.scss';
@@ -75,9 +75,10 @@ export default class ChatContainer extends Component {
 		socket.emit(TYPING, {chatId, isTyping});
 	}
 	setActiveChat(chat){
-		const { user, connectedUsers } = this.props.socket;
+		const { user } = this.props.socket;
+		const { peopleOnline } = this.props
 
-		const active = connectedUsers.find(el => el.id === chat.id);
+		const active = peopleOnline.find(el => el.id === chat.id);
 		
 		const exist = active.chats.find(el => el.id === user.id);
 		if (!exist) {
@@ -94,23 +95,24 @@ export default class ChatContainer extends Component {
 		const { socket } = this.props;
 		const hash = user.id.concat(active.id).split('').sort().join('');
 		const messageEvent = `${MESSAGE_RECIEVED}-${hash}`
-		const typingEvent = `${TYPING}-${active.id}`
+		// const typingEvent = `${TYPING}-${active.id}`
 		socket.on(messageEvent, this.addMessageToChat(user.id));
 	}
 	render() {
-		const { user, connectedUsers } = this.props.socket;
+		const { user } = this.props.socket;
+		const { peopleOnline } = this.props;
 		return (
 			<div className="container">
 				<Sidebar
 					logout={this.logout}
 					user={user}
-					online={connectedUsers}
+					online={peopleOnline}
 					activeChat={this.state.activeChat}
 					setActiveChat={this.setActiveChat.bind(this)}
 				/>
-				<Chat company={this.state.activeChat}
+				{user && <Chat company={this.state.activeChat}
 							userid={user.id}
-							send={this.sendMessage.bind(this)}/>
+							send={this.sendMessage.bind(this)}/>}
 			</div>
 		)
 	}

@@ -23,7 +23,7 @@ export default class Chat extends React.Component{
 				}
 				<div className="messages">
 					{chat && chat.messages.map((el, index) => <Message
-						avatar={el.sender.avatar}
+						user={el.sender}
 						text={el.message}
 						isReaded={true}
 						isSend={true}

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import '../styles/Sidebar.scss';
 import { Form, Icon, Input } from 'antd';
 import ArchiveChat from '../../../component/ArchiveChat';
@@ -19,6 +19,7 @@ export default function Sidebar({logout, user, online, activeChat, setActiveChat
 						if(el !== user){
 							return <OnlinePerson key={index} user={el} setActiveChat={setActiveChat} />
 						}
+						return '';
 					})}
 				</div>
 				<div className='chat-archive'>
