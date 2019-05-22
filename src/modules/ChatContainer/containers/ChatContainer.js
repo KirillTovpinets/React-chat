@@ -47,8 +47,14 @@ export default class ChatContainer extends Component {
 			const { activeChat, chats } = this.state;
 			
 			if (activeChat) {
-				// chats.find(el => el.id === senderId).messages.push(message);
-				activeChat.chats.find(el => el.id === receiverId).messages.push(message);
+				const newChat = chats.find(el => el.id === senderId);
+				const active = activeChat.chats.find(el => el.id === receiverId);
+				if( newChat.messages === active.messages) {
+					active.messages.push(message);	
+				} else {
+					newChat.messages.push(message);
+					active.messages.push(message);
+				}
 			} else {
 				chats.find(el => el.id === senderId).messages.push(message);
 			}
