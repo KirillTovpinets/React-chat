@@ -8,40 +8,54 @@ export default class ChatContainer extends Component {
 		super(props);
 
 		this.state = {
-			activeChat: null
+			activeChat: null,
+			chats: props.socket.user.chats
 		}
 	}
 
-	addChat = (chat, reset) => { 
-		const { socket } = this.props;
-		const { chats } = this.state;
+	componentWillReceiveProps(nextProps){
+		const { socket, peopleOnline } = nextProps;
+		const { user } = socket;
 
-		const newChats = reset ? [chat] : [...chats, chat];
-		this.setState({
-			chats: newChats,
-			activeChat: reset ? chat : this.state.activeChat
-		});
-		const messageEvent = `${MESSAGE_RECIEVED}-${chat.id}`;
-		const typingEvent = `${TYPING}-${chat.id}`
-
-		socket.on(typingEvent, this.updateTypingInChat(chat.id));
-		socket.on(messageEvent, this.addMessageToChat(chat.id));
+		if(peopleOnline.length > 0 && this.props.peopleOnline.length !== peopleOnline.length){
+			console.log('hello');
+			console.log(peopleOnline);
+			let chats = [];
+			peopleOnline.forEach(receiver => {
+				const hash = user.id.concat(receiver.id).split('').sort().join('');
+				const messageEvent = `${MESSAGE_RECIEVED}-${hash}`
+				chats.push({
+					id: receiver.id,
+					sender: receiver,
+					messages: []
+				})
+				// const typingEvent = `${TYPING}-${active.id}`
+				socket.on(messageEvent, this.addMessageToChat(user.id, receiver.id));
+			})
+			this.setState({
+				...this.state,
+				chats
+			})
+		}
 	}
 
 	resetChat = (chat) => {
 		return this.addChat(chat, true);
 	}
-	addMessageToChat(chatId){
+	addMessageToChat(receiverId, senderId){
 		return message => {
-			const { activeChat } = this.state;
-			const { socket } = this.props;
-			activeChat.chats.find(el => el.id === chatId).messages.push(message);
+			const { activeChat, chats } = this.state;
+			
+			if (activeChat) {
+				chats.find(el => el.id === senderId).messages.push(message);
+				activeChat.chats.find(el => el.id === receiverId).messages.push(message);
+			} else {
+				chats.find(el => el.id === senderId).messages.push(message);
+			}
 
-			const id = socket.user.id;
-			socket.emit(MESSAGE_SENT, {chatId: id, message});
 			this.setState({
-				...this.state,
-				activeChat
+				activeChat,
+				chats
 			})
 		}
 	}
@@ -76,38 +90,45 @@ export default class ChatContainer extends Component {
 	}
 	setActiveChat(chat){
 		const { user } = this.props.socket;
-		const { peopleOnline } = this.props
+		const { peopleOnline, socket } = this.props
 
-		const active = peopleOnline.find(el => el.id === chat.id);
-		
-		const exist = active.chats.find(el => el.id === user.id);
-		if (!exist) {
-			active.chats.push({
-				id: user.id,
-				messages: []
-			})
+		const userChat = this.state.chats.find(el => el.id === chat.id);
+		let messages = [];
+
+		if(userChat && userChat.messages.length > 0) {
+			messages = userChat.messages;
 		}
+		const active = peopleOnline.find(el => el.id === chat.id);
+		active.chats.push({
+			id: user.id,
+			messages
+		})
+		user.chats.push({
+			id: active.id,
+			messages
+		})
 		
 		this.setState({
 			...this.state,
 			activeChat: active
 		})
-		const { socket } = this.props;
-		const hash = user.id.concat(active.id).split('').sort().join('');
-		const messageEvent = `${MESSAGE_RECIEVED}-${hash}`
-		// const typingEvent = `${TYPING}-${active.id}`
-		socket.on(messageEvent, this.addMessageToChat(user.id));
+		// const hash = user.id.concat(active.id).split('').sort().join('');
+		// const messageEvent = `${MESSAGE_RECIEVED}-${hash}`
+		// // const typingEvent = `${TYPING}-${active.id}`
+		// socket.on(messageEvent, this.addMessageToChat(user.id));
 	}
 	render() {
 		const { user } = this.props.socket;
+		const { chats, activeChat } = this.state;
 		const { peopleOnline } = this.props;
 		return (
 			<div className="container">
 				<Sidebar
 					logout={this.logout}
 					user={user}
+					chats={chats.filter(el => el.messages.length > 0)}
 					online={peopleOnline}
-					activeChat={this.state.activeChat}
+					activeChat={activeChat}
 					setActiveChat={this.setActiveChat.bind(this)}
 				/>
 				{user && <Chat company={this.state.activeChat}

@@ -4,7 +4,7 @@ import { Form, Icon, Input } from 'antd';
 import ArchiveChat from '../../../component/ArchiveChat';
 import OnlinePerson from '../../../component/OnlinePerson';
 
-export default function Sidebar({logout, user, online, activeChat, setActiveChat}) {
+export default function Sidebar({logout, chats, user, online, activeChat, setActiveChat}) {
 		return (
 			<div className='sidebar'>
 				<Form>
@@ -15,15 +15,18 @@ export default function Sidebar({logout, user, online, activeChat, setActiveChat
 				</Form>				
 				<hr/>
 				<div className='now-online'>
-					{online && online.map((el, index) => {
-						if(el !== user){
+					{online && user && online.map((el, index) => {
+						if(el.id !== user.id){
 							return <OnlinePerson key={index} user={el} setActiveChat={setActiveChat} />
 						}
 						return '';
 					})}
 				</div>
 				<div className='chat-archive'>
-					{user && user.chats.map((el, index) => <ArchiveChat key={index} chat={el} />)}
+					{chats && chats.map((el, index) => <ArchiveChat key={index} 
+																													chat={el} 
+																													setActiveChat={setActiveChat}
+																													activeChat={activeChat} />)}
 				</div>
 			</div>
 		)

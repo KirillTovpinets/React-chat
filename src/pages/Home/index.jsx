@@ -45,9 +45,10 @@ class Home extends React.Component {
 		})
 	}
 	render(){
+		const {socket} = this.props;
 		return (
 			<section className='home'>
-				<ChatContainer socket={this.props.socket} peopleOnline={this.state.peopleOnline}/>
+				<ChatContainer socket={socket} peopleOnline={this.state.peopleOnline}/>
 			</section>
 		)
 	}

@@ -2,6 +2,7 @@ import React from 'react'
 import './ArchiveChat.scss';
 import isToday from 'date-fns/is_today';
 import format from 'date-fns/format';
+import className from 'classnames';
 
 const getTime = (time) => {
 	if(isToday(time)) {
@@ -10,19 +11,21 @@ const getTime = (time) => {
 		return format(time, 'DD:MM:YYYY')
 	}
 }
-export default function ArchiveChat ({ chat }){
+export default function ArchiveChat ({ chat, activeChat, setActiveChat }){
+	const defaultAvatar = 'http://laurauinteriordesign.com/wp-content/uploads/2018/03/avatar-placeholder.png';
+	const avatar = chat.sender.avatar ? ('data:image/jpeg;base64,' + chat.sender.avatar.file.originFileObj) : defaultAvatar;
 	return (
-		<div className="archive-chat">
-			<img src="https://source.unsplash.com/collection/190727/1600x900" alt={chat.name}/>
+		<div className={className('archive-chat', { 'active': activeChat && chat.id === activeChat.id })} onClick={() => setActiveChat(chat)}>
+			<img src={avatar} alt={chat.sender.username}/>
 			<div className="content">
-				<h4 className="name">{chat.name}</h4>
+				<h4 className="name">{chat.sender.username}</h4>
 				<p className="last-message">
-				{chat.messages[0] ? 
-					chat.messages[0].slice(0, 50).concat('...') :
+				{chat.messages[chat.messages.length - 1] ? 
+					chat.messages[chat.messages.length - 1].message.split('').slice(0, 50).join('').concat('...') :
 					'Сообщений нет'}</p>
 			</div>
 			<div className="info">
-				<span>{chat.messages[0] && getTime(chat.messages[0].date)}</span>
+				<span>{chat.messages[0] && getTime(chat.messages[0].time)}</span>
 			</div>
 		</div>
 	)
