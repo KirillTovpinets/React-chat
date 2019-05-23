@@ -14,11 +14,22 @@
 		margin-right: 10px;
 	}
 	.content{
+		width: 100%;
+		max-width: 160px;
+		display: block;
 		.name{
 			margin-bottom: 0;
 		}
 		.last-message{
 			color: #ccc;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			overflow: hidden;
 		}
+	}
+	.info{
+		display: flex;
+		align-self: flex-start;
+		color: #ccc;
 	}
 }

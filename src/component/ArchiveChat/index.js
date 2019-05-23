@@ -21,7 +21,7 @@ export default function ArchiveChat ({ chat, activeChat, setActiveChat }){
 				<h4 className="name">{chat.sender.username}</h4>
 				<p className="last-message">
 				{chat.messages[chat.messages.length - 1] ? 
-					chat.messages[chat.messages.length - 1].message.split('').slice(0, 50).join('').concat('...') :
+					chat.messages[chat.messages.length - 1].message :
 					'Сообщений нет'}</p>
 			</div>
 			<div className="info">

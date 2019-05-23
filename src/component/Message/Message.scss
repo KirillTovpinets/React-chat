@@ -33,6 +33,10 @@
 	&__content{
 		display: flex;
 		flex-direction: row-reverse;
+		p{
+			max-width: 300px;
+			word-break: break-word;
+		}
 		img{
 			width: 13px;
 			margin-left: 10px;
@@ -51,6 +55,7 @@
 	&--isMe{
 		display: flex;
 		flex-direction: row-reverse;
+		align-self: flex-end;
 		.message__content{
 			flex-direction: row;
 			img{

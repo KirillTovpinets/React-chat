@@ -9,7 +9,7 @@ export default class ChatContainer extends Component {
 
 		this.state = {
 			activeChat: null,
-			chats: props.socket.user.chats
+			chats: props.socket && props.socket.user ? props.socket.user.chats : []
 		}
 	}
 
@@ -17,7 +17,7 @@ export default class ChatContainer extends Component {
 		const { socket, peopleOnline } = nextProps;
 		const { user } = socket;
 
-		if(peopleOnline.length > 0 && this.props.peopleOnline.length !== peopleOnline.length){
+		if(user && peopleOnline.length > 0 && this.props.peopleOnline.length !== peopleOnline.length){
 			console.log('hello');
 			console.log(peopleOnline);
 			let chats = [];

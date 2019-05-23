@@ -10,6 +10,11 @@ export default class Chat extends React.Component{
 		this.props.send(this.props.company.id, _message.state.value);
 		_message.state.value = '';
 	}
+
+	componentDidUpdate(){
+		const container = document.getElementById('container');
+		container.scrollTop = container.scrollHeight;
+	}
 	render(){
 		const { company, userid } = this.props;
 		const chat = company ? company.chats.find(el => el.id === userid) : null;
@@ -22,15 +27,19 @@ export default class Chat extends React.Component{
 					</div>
 				}
 				<div className="messages">
-					{chat && chat.messages.map((el, index) => <Message
-						user={el.sender}
-						text={el.message}
-						isReaded={true}
-						isSend={true}
-						isMe={el.sender.id === userid}
-						key={index}
-						date={el.time}
-					/>)}
+					<div className="overflow-container" id="container">
+						<div className="messages-layout">
+							{chat && chat.messages.map((el, index) => <Message
+								user={el.sender}
+								text={el.message}
+								isReaded={true}
+								isSend={true}
+								isMe={el.sender.id === userid}
+								key={index}
+								date={el.time}
+							/>)}
+						</div>
+					</div>
 					{chat && chat.messages.length === 0 && <div className="no-messages"><span>Сообщений нет</span></div>}
 				</div>
 				{chat && 
