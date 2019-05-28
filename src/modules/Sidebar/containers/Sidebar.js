@@ -15,18 +15,26 @@ export default function Sidebar({logout, chats, user, online, activeChat, setAct
 				</Form>				
 				<hr/>
 				<div className='now-online'>
-					{online && user && online.map((el, index) => {
-						if(el.id !== user.id){
-							return <OnlinePerson key={index} user={el} setActiveChat={setActiveChat} />
-						}
-						return '';
-					})}
+					<h4 className='title'>Сейчас онлайн</h4>
+					<hr/>
+					<div className="users-online">
+						{online && user && online.map((el, index) => {
+							if(el.id !== user.id){
+								return <OnlinePerson key={index} user={el} setActiveChat={setActiveChat} />
+							}
+							return '';
+						})}
+						{online.length === 1 && <span className="is-empty">Список пуст</span>}
+					</div>
 				</div>
 				<div className='chat-archive'>
+					<h4 className='title'>Чаты</h4>
+					<hr/>
 					{chats && chats.map((el, index) => <ArchiveChat key={index} 
 																													chat={el} 
 																													setActiveChat={setActiveChat}
 																													activeChat={activeChat} />)}
+					{chats.length === 0 && <span className="is-empty">Список пуст</span>}
 				</div>
 			</div>
 		)

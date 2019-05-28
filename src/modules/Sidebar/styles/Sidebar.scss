@@ -2,6 +2,11 @@
 	padding: 50px 0px;
 	width: 300px;
 	border-right: 1px solid #fafafa;
+	.is-empty{
+		padding: 10px 0px 30px;
+		display: block;
+		text-align: center;
+	}
 	form{
 		padding: 0 20px;
 		.search-field{
@@ -22,5 +27,8 @@
 		border: none;
 		height: 1px;
 		margin-bottom: 20px;
+	}
+	.title{
+		text-align: center;
 	}
 }

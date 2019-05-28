@@ -16,7 +16,9 @@ export default function ArchiveChat ({ chat, activeChat, setActiveChat }){
 	const avatar = chat.sender.avatar ? ('data:image/jpeg;base64,' + chat.sender.avatar.file.originFileObj) : defaultAvatar;
 	return (
 		<div className={className('archive-chat', { 'active': activeChat && chat.id === activeChat.id })} onClick={() => setActiveChat(chat)}>
-			<img src={avatar} alt={chat.sender.username}/>
+			<div className="avatar">
+				<img src={avatar} alt={chat.sender.username}/>
+			</div>
 			<div className="content">
 				<h4 className="name">{chat.sender.username}</h4>
 				<p className="last-message">

@@ -22,8 +22,7 @@ export default class Chat extends React.Component{
 			<div className="chat">
 				{company && 
 					<div className="title">
-						<h4>{company.nickname}</h4>
-						<span>{company.status}</span>
+						<h4>{company.username}</h4>
 					</div>
 				}
 				<div className="messages">
