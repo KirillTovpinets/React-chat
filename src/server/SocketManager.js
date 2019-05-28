@@ -1,5 +1,6 @@
 const io = require('./index.js').io;
-const db = require('monk')('mongodb://localhost:27017/chat');
+const connectionString = process.env.DATABASE_URL || 'mongodb://localhost:27017/chat';
+const db = require('monk')(connectionString);
 
 const { VERIFY_USER, 
 				USER_CONNECTED, 
