@@ -1,13 +1,14 @@
-const handleRequest = (req, res) => {
-	if (req.url === '/') {
-		res.sendFile(path.join(__dirname, 'build', 'index.html'));
-	}
-}
-
-
-var app = require('http').createServer(handleRequest);
 var io = module.exports.io = require('socket.io')(app);
 const path = require('path');
+const fs = require('fs');
+
+var app = require('http').createServer((req, res) => {
+	if (req.url === '/') {
+		var filePath = path.join(__dirname, 'build', 'index.html'); 
+		var stream = fs.createReadStream(filePath);
+		stream.pipe(res);
+	}
+});
 
 const PORT = process.env.PORT || 3001;
 const socketManager = require('./SocketManager');
